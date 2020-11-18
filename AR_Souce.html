@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>XR pyramid</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css">
+
+    <script>
+        // WebXR requires HTTPS, so the site doesn't work if someone manually enters
+        // the URL and ends up using HTTP. To work around this, force redirect from
+        // http to https for non-localhost addresses.
+        if (window.location.protocol == "http:" &&
+            window.location.hostname != "localhost" &&
+            window.location.hostname != "127.0.0.1" &&
+            window.location.hostname != "[::1]") {
+            window.location = window.location.href.replace('http:', 'https:');
+        }
+    </script>
+
+    <!-- import the webpage's javascript files -->
+    <script src="https://aframe.io/releases/1.0.3/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-extras@3.3.0/dist/aframe-extras.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js"></script>
+    <script src="https://rawgit.com/mayognaise/aframe-gif-shader/master/dist/aframe-gif-shader.min.js"></script>
+    <script src="https://rawgit.com/mayognaise/aframe-gif-component/master/dist/aframe-gif-component.min.js"></script>
+    
+    <script>
+        // Define a few custom components useful for AR mode. While these are somewhat reusable,
+        // I recommend checking if there are officially supported alternatives before copying
+        // these into new projects.
+
+        // See also https://github.com/aframevr/aframe/pull/4356
+        AFRAME.registerComponent('hide-in-ar-mode', {
+            // Set this object invisible while in AR mode.
+            init: function () {
+                this.el.sceneEl.addEventListener('enter-vr', (ev) => {
+                    this.wasVisible = this.el.getAttribute('visible');
+                    if (this.el.sceneEl.is('ar-mode')) {
+                        this.el.setAttribute('visible', false);
+                    }
+                });
+                this.el.sceneEl.addEventListener('exit-vr', (ev) => {
+                    if (this.wasVisible) this.el.setAttribute('visible', true);
+                });
+            }
+        });
+
+
+
+       
+        var camPos=new THREE.Vector3();
+        var oldPosX;
+        var entity;
+        var num=0;
+        var num2=0;
+        var curKey='=';
+        var sideName="txt-r";
+        var center;
+
+        AFRAME.registerComponent('update-gif', {
+            schema: {
+            },
+            init:function(){
+                entity= document.querySelector('#gif');
+                center= document.querySelector('#center');
+                // AFRAME.utils.entity.setComponentProperty(entity,'visible',"true");
+            },
+            log : function () {
+                console.log("X:"+camPos.x.toFixed()+"  Z:"+camPos.z.toFixed());
+                console.log("UPDATE:"+(camPos.x.toFixed()- center.getAttribute("position").x)<oldPosX);
+            },
+            play: function () {
+                // entity.components.gif.togglePlayback();
+                this.data.timestamp = Date.now();
+                this.log();
+                //entity.pause();
+            },
+            tick: function () { 
+                var cameraEl = this.el.sceneEl.camera.el;
+                camPos.setFromMatrixPosition(cameraEl.object3D.matrixWorld);
+                num+=camPos.x.toFixed();
+
+                if((camPos.x.toFixed()- center.getAttribute("position").x)<oldPosX){
+                    entity.components.gif.nextFrame()
+                    this.log();
+                }
+                
+                if (Date.now() - this.data.timestamp > 2000) {
+                    this.data.timestamp += 2000;
+                    this.data.seconds += 2;
+                    this.log();
+                }  
+                oldPosX=camPos.x;
+            
+            }
+        });
+
+        window.onkeydown = function(e) {
+            if (e.key == " "){ 
+                entity.components.gif.togglePlayback();
+                console.log();
+            }  
+        };
+
+    </script>
+</head>
+<body>
+
+<a-scene>
+    <a-assets timeout="30000">
+        <a-asset-item id="pyramid" src="./Square.glb" response-type="arraybuffer"></a-asset-item>
+        <a-asset-item id="pillar" src="./mirror.glb" response-type="arraybuffer"></a-asset-item>
+        <img id="mirror" src="./mirrorBlack.png">
+        <img id="txt-r"  src="./test.gif">
+    </a-assets>
+
+    <a-camera position="0 2.5 0" camera-logger>
+            <a-entity id="gif" geometry="primitive:circle;segments:6; radius:0.65" material="shader:gif;src:#txt-r" position="1 -0.125 -1.5" gif="" update-gif></a-entity> 
+            <a-image id="mirror-world" src="#mirror" position="1 -0.5 -1.501" geometry="width:2; height:2"></a-image>
+    </a-camera>
+    <a-entity>
+        <a-box id="center" color="tomato" depth="1" height="1" width="1" position="0 0 0"></a-box>
+        <a-box color="yellow" depth="4" height="0.5" width="4" position="8 0 -7"></a-box>
+        <a-box color="green" depth="4" height="0.5" width="4" position="-8 0 -7"></a-box>
+    </a-entity>
+
+    <a-entity id="dino" position="0 0 0" >
+        <a-entity position="1 0 0" scale= "0.7 0.7 0.7"gltf-model="#pyramid" material="shader: flat" shadow="cast: false; receive: true"></a-entity>
+        <a-entity position="0 0 0" gltf-model="#pillar" material="shader: flat" shadow="cast: false; receive: false"></a-entity>
+    </a-entity>
+
+
+    <!-- <a-entity light="type: ambient; color: #FFF" position="0 7 0"></a-entity> -->
+    <a-entity light="type: point; distance: 50; color: #FFF" position="0 7 0" ></a-entity>
+    <a-entity light="type: point; distance: 50; color: #FFF" position="0 7 0" ></a-entity>
+   
+            
+</a-scene>
+
+
+
+<!-- include the Glitch button to show what the webpage is about and
+      to make it easier for folks to view source and remix -->
+<div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+<script src="https://button.glitch.me/button.js"></script>
+</body>
+</html>
+
+<!--通过事件来更改，转换， 比如增加事件， click， 然后创建一个新的场景-->
