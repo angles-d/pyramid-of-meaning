@@ -102,41 +102,41 @@
         }
             
 
-        window.onkeydown = function(e) {
-            if (e.key == "p"){ 
-                var playe=document.querySelector('#player');
-                //entity.components.gif.togglePlayback();
-                var x=AFRAME.utils.entity.getComponentProperty(playe, "position").x.toFixed();
-                var z=AFRAME.utils.entity.getComponentProperty(playe, "position").z.toFixed()
-                console.log("X:"+x+"  Z:"+z);
-            }  
-            if(e.key == "1"){
-                gifTR.components.gif.togglePlayback();
-            }
-            if(e.key == "2"){
-                gifRA.components.gif.togglePlayback();
-            }  
-            if(e.key == "3"){
-                gifAT.components.gif.togglePlayback();
-            } 
-            if(e.key == "8"){
-                changeGif(gifTR,gifAT,gifRA);
-            }
-            if(e.key == "9"){
-                changeGif(gifRA,gifAT,gifTR);
-            }  
-            if(e.key == "0"){
-                changeGif(gifAT,gifTR,gifRA);
-            } 
-            if(e.key == "4"){
-                AFRAME.utils.entity.setComponentProperty(gifTR,'visible',"false");
-                AFRAME.utils.entity.setComponentProperty(gifRA,'visible',"false");
-                AFRAME.utils.entity.setComponentProperty(gifAT,'visible',"false");
-            } 
-            if(e.key == "5"){
-                changeGif(gifAT,gifRA,gifTR);
-            } 
-        };
+        // window.onkeydown = function(e) {
+        //     if (e.key == "p"){ 
+        //         var playe=document.querySelector('#player');
+        //         //entity.components.gif.togglePlayback();
+        //         var x=AFRAME.utils.entity.getComponentProperty(playe, "position").x.toFixed();
+        //         var z=AFRAME.utils.entity.getComponentProperty(playe, "position").z.toFixed()
+        //         console.log("X:"+x+"  Z:"+z);
+        //     }  
+        //     if(e.key == "1"){
+        //         gifTR.components.gif.togglePlayback();
+        //     }
+        //     if(e.key == "2"){
+        //         gifRA.components.gif.togglePlayback();
+        //     }  
+        //     if(e.key == "3"){
+        //         gifAT.components.gif.togglePlayback();
+        //     } 
+        //     if(e.key == "8"){
+        //         changeGif(gifTR,gifAT,gifRA);
+        //     }
+        //     if(e.key == "9"){
+        //         changeGif(gifRA,gifAT,gifTR);
+        //     }  
+        //     if(e.key == "0"){
+        //         changeGif(gifAT,gifTR,gifRA);
+        //     } 
+        //     if(e.key == "4"){
+        //         AFRAME.utils.entity.setComponentProperty(gifTR,'visible',"false");
+        //         AFRAME.utils.entity.setComponentProperty(gifRA,'visible',"false");
+        //         AFRAME.utils.entity.setComponentProperty(gifAT,'visible',"false");
+        //     } 
+        //     if(e.key == "5"){
+        //         changeGif(gifAT,gifRA,gifTR);
+        //     } 
+        // };
 
     </script>
 </head>
@@ -144,12 +144,12 @@
 
 <a-scene>
     <a-assets timeout="30000">
-        <a-asset-item id="pyramid" src="./three2.glb" response-type="arraybuffer"></a-asset-item>
-        <a-asset-item id="pillar" src="./mirror.glb" response-type="arraybuffer"></a-asset-item>
-        <img id="mirror" src="./mirrorBlack.png">
-        <img id="text-reality"  src="./T_R.gif">
-        <img id="reality-abstract"  src="./R_A.gif">
-        <img id="abstract-text"  src="./A_T.gif">
+        <a-asset-item id="pyramid" src="./assests/three2.glb" response-type="arraybuffer"></a-asset-item>
+        <a-asset-item id="pillar" src="./assests/pillar.glb" response-type="arraybuffer"></a-asset-item>
+        <img id="mirror" src="./assests/mirrorBlack.png">
+        <img id="text-reality"  src="./assests/T_R.gif">
+        <img id="reality-abstract"  src="./assests/R_A.gif">
+        <img id="abstract-text"  src="./assests/A_T.gif">
     </a-assets>
 
 
